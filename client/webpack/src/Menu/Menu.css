@@ -1,0 +1,17 @@
+.menu{
+    text-align: right;
+    line-height: 40px;
+    background: yellowgreen;
+
+}
+/* to edit css within div blocke  */
+/* means > this will select all selector */
+.menu > a{
+    margin-right: 15px;
+    font-size: 15px;
+    font-weight: bold;
+    font-style: italic;
+    letter-spacing: 3px;
+    
+}
+/* line height means from above div ending to below div  */

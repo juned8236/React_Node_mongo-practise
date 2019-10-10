@@ -1,0 +1,51 @@
+after registration we have to show that registration was completed (on clicking register button)
+intially msg was blank
+		 this.state={
+      'dataObj':{},
+      'msg':'',
+
+then put debugger at res
+ .then(
+     (res)=>{
+	       debugger;
+
+
+and see res.data
+there is row count 1
+  fnReg(){
+    debugger;
+    ServerCall.fnPostReg('http://localhost:2020/web/std-reg',this.state.dataObj)
+   .then(
+     (res)=>{
+       debugger;
+      if (res.data && res.data.rowCount){
+        this.setState({
+          'msg':'suceess',
+        })
+      }else {
+        this.setState({
+          'msg':'fail'
+        })
+      }
+      }
+   )
+
+# in mysql res.data.affectedrows
+
+bind this function with constructor
+ constructor(){
+    super();
+    this.state={
+      'dataObj':{},
+      'msg':'',
+    }
+    this.fnPrepareData=this.fnPrepareData.bind(this);
+
+to display msg we have to user.jsx
+  <p>
+        {this.state.msg}
+      </p>
+ ===============================================
+
+
+

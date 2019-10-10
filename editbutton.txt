@@ -1,0 +1,134 @@
+now we we have to edit and delete buttons
+class Table extends React.Component {
+  render() {
+    return template.call(this);
+  }
+  fnEdit(){
+    debugger;
+  }
+  fnDelete(){
+    debugger;
+  
+  }
+now to display bind it with jsx
+   <td><input type='button' value='edit' onClick={this.fnEdit.bind(this)} /></td>
+                      <td><input type='button' value='delete' onClick={this.fnDelete.bind(this)} /></td>
+
+see at console fnEdit is working or not
+====================================================================
+now on clicking edit nothing should be happened but we know by using onClick one event has been passed to function 
+so on onClick passed the object
+                 <td><input type='button' value='edit' onClick={this.fnEdit.bind(this,o)} /></td>
+#here o is {data.map((o,i)= means one single row of table
+this going to passed to fnEdit(rowdata)
+ fnEdit(){
+    debugger;
+  }
+now see at console
+rowdata
+{name: "", rno: "drgdg", email: "", loc: ""}
+email: ""
+loc: ""
+name: ""
+rno: "drgdg"
+__proto__: Object
+similar for delete.......................
+=============================================================================
+now for update ,we have to update our  dataObj:{} that was in user.js so we have to send this rowdata(Table component) to (user.js)
+means child to parent component for according to rule children contain props
+so in table.js
+    this.props.fnEdit(rowData);
+
+and parent contains attributes(put this fnEdit ,from where tablecomponent is calling means in user.jsx)
+in user.jsx
+      <Table headers={headers} data={data} rows={rows} fnEdit={this.fnEditData} />
+means left side to goes children and right side goes to parent i.e row data goes to function fnEditData in the form of argument
+in user.js
+fnEditData(userData) {
+     debugger;
+    }
+
+
+
+  check at console data is coming or not
+userData
+{id: 1, name: "", rno: "drgdg", email: "", loc: ""}
+email: ""
+id: 1
+loc: ""
+name: ""
+rno: "drgdg"
+__proto__: Object
+
+================================================================================================
+now to update ,means register button should be disable and new update button should be there 
+so default method isUpdate 
+make it false in constructor
+class Users extends React.Component {
+  constructor() {
+isUpdate': false
+
+now when we click on Edit button means fnEditData should be trigger so make isupdate :true there
+fnEditData(userData) {
+     debugger;
+     this.setState({
+      dataObj: userData,
+
+       isUpdate:true,
+     })
+    }
+here 
+      dataObj: userData, this is will give current value in input box
+
+dont forget to bind fnEditdata in constructor because you are updating state
+
+now below means if isUpdate true update button is there otherwise if isUdate false Registe button is there
+initially it false (on constructor) therefore register button there but when clicking on edit button fnEditData is triggered and isUpdate=false
+so update button is there
+   {  
+        isUpdate ? <input type='button' value='update' onClick={this.fnUpdate.bind(this)}  />:
+        <input type='button' value='Register' onClick={this.fnReg.bind(this)} />
+}
+makefnUpdate(){
+     debugger;
+   }
+bind it constructor
+===============================================================================
+now to update in database write logics in fnUdate (because on clicking update fnUpate button should be triggerd)
+data inserting into database is same therefore just copy FnReg
+only change the state isUpdate :false 
+because after insertion  register buttion should be there
+fnUpdate(){
+       // debugger;
+    ServerCall.fnPostReg('http://localhost:2020/web/std-update',this.state.dataObj)
+    .then(
+      (res)=>{
+       //  debugger;
+       if (res.data && res.data.rowCount){
+         this.fnGetStudetns();
+         this.setState ({
+           'msg':'suceess',
+           isUpdate:false,
+           'dataObj': {
+             name: '',
+         rno: '',
+         email: '',
+         loc: ''
+           }
+         })
+       }else {
+         this.setState({
+           'msg':'fail'
+         })
+       }
+       }
+    )
+    .catch(
+      ()=>{
+        debugger;
+      }
+    )
+   }
+
+now on server side make api for /web/std-update
+===========================================================================

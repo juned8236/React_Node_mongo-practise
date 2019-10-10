@@ -1,0 +1,57 @@
+after registration all field should be empty
+so constructor means first time load
+at first time all thing to be empty
+ constructor(){
+    super();
+   this.state={
+      'dataObj':{
+        name: 'sfsdf',
+        Rno: '',
+        Email: '',
+        Location: ''
+      },
+      'msg':'',
+
+
+send this dataObj to where component loading meana user.jsx
+    const {name,Rno,Email,Location} =this.state.dataObj;
+
+      <InputComp label="Name" type='text' id="name" val={name} fnPrepareData11={this.fnPrepareData} />
+
+here  val={name} means left side goes to <InputComp therefore go to
+InputComp.jsx
+  const {label,type,id,val}=this.props
+now to use val
+
+        <b>{label}</b>: <input  id={id} type={type} value={val} onChange={this.fnChange.bind(this)} />
+===========================================================================================================
+
+now i need the thing in dynamic on clicking on user i have to input some value that goes to database therefore,for
+input create one component called Inputcomponent {create-react-component InputComponent}
+dynamic means from user.jsx  we called inputcomp.jsx  
+eg. in user.jsx
+            <input  />
+
+
+in user.jsx   calling Input componetnt
+      <InputComp label="Name" type='text' id="name" ></InputComp>
+
+these id label type going outside to inputcomp.jsx refore goes in the form of props
+
+const {id,type,label}= this.props
+
+using these id type label in Inputcomp.jsx in the form attribute
+        <b>{label}</b>: <input input id={id} type={type}/>
+
+Name  texbox  here label is using for Name type is using for text box and id is using for key like we send data in json format hence
+key value is neceesary,id used for key and value we will get from onchange
+
+Dynamic in the sense first time in input.jsx  <input id={id} type={type} {label} this is created now you can create many box in user.jsx
+by using this
+
+output
+
+
+
+
+

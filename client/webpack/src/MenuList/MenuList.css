@@ -1,0 +1,16 @@
+ul{
+    margin: 0;
+    list-style-type: none;
+    text-align: right;
+    line-height: 40px;
+    background: yellowgreen
+}
+
+ul > li{
+    display: inline;
+    margin-right: 15px;
+    font-size: 15px;
+    font-weight: bold;
+    font-style: italic;
+    letter-spacing: 3px;
+}

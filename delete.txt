@@ -1,0 +1,171 @@
+first make server side endpoint
+localhost:2020/web/delete
+
+router.post('/delete',function(request,response){
+    var id=request.query.id
+    shareObj.getPgConnection(response,function(callback){
+        var q="DELETE FROM users WHERE id="+id;
+        con.query(q,function(e,s){
+            if(e){
+                response.send(e);
+            }else{
+                response.send(s);
+            }
+        })
+    })
+})
+
+check it by RestClient
+runserver node app
+
+==============================================================
+in table.jsx this will show delete buttton on each rows
+<td><input type='button' value='delete' onClick={this.fnDelete.bind(this,o)} /></td>
+
+on clicking fnDelte will be triggered in table.js and it has row data as argrument i.e fnDelete(rowData) coming from above o i.e (this,o) contains id,name,rno,email, location
+ fnDelete(rowData){
+    debugger;  
+  }
+
+from here we need only id to delete specific row hence in create constructor and make empty value for id  then update id value from this rowData
+ constructor(){
+    // debugger;
+    super();
+    this.state={
+      id:""
+    }
+  }
+
+ fnDelete(rowData){
+    // debugger;
+    this.setState({
+      id:rowData.id
+    });
+    this.props.fnDelete(this.state.id)
+    
+  }
+now here send this id usin this.props.fnDelete(this.state.id)
+
+on browser cliking delete button  this debugger activated and contain rowData to delete rowdata that was availbale in user.js (dataObj) we have to 
+update that dataObj 
+for that we sending this id to user.js in (child to parent ) {first send to user.jsx from where  child TAble component is called}
+child contains props
+	    this.props.fnDelete(id);
+Parent contain attributes (in user.jsx)
+	      <TableComponent headers={headers} data={data} keys={keys} fnEdit={this.fnEditData} fnDelete={this.fnDeleteData} />
+
+fnDeleteDAta goes to parent i.e user.js
+in user.js
+fnDeleteData(){
+     debugger;
+   }
+    
+see at console by debugging data is coming
+id  (argument comes here as )
+now to delete
+
+  fnDeleteData(id){
+     debugger;
+     ServerCall.fnGetReg(
+      'http://localhost:2020/web/delete?id='+id
+    )
+   .then((res)=>{
+    debugger;
+   })
+   .catch((res)=>{
+     debugger;
+   })
+  }
+
+bind fnDeletat with constructor
+    this.fnDeleteData=this.fnDeleteData.bind(this);  
+
+============================================================================================================
+Now Delete with Mask
+initially the mask was off
+
+constructor(){
+    // debugger;
+    super();
+    this.state={
+      id:"",
+      isShowMask:false
+    }
+
+on clicking on delete button mask should be activated
+fnDelete(rowData){
+    // debugger;
+    this.setState({
+      id:rowData.id,
+      isShowMask:true
+    });
+ 
+then create Mask Component   
+mask component called from table.jsx therefore in table.jsx
+
+<Mask />
+
+
+mask.jsx
+
+   <div className="mask"></div>
+
+      <div>
+        <h1> Are You Sure want to Delete</h1>
+        <div>
+         <input type='button' value='ok' onClick={this.fnConfirm.bind(this,'ok')} />
+          <input type='button' value='No' onClick={this.fnConfirm.bind(this,'no')} />
+
+        </div>
+      </div>
+
+    </div>
+
+on clicking on Ok button one function fnConfirm will be triggered in mask.js with object ok as argument
+
+mask.js
+
+fnConfirm(msg){
+    this.props.fnConfirm(msg);
+  }
+
+here argument msg==ok if click on ok button if click on no button msg==no
+
+Mask is calling from table.jsx therefore mask is child and table is parent
+sending data from child to parent
+mask.js to table.jsx to table.js
+mask.js 
+	this.props.fnConfirm(msg)
+table.jsx
+	fnConfirm-={this.fnConfirm}
+
+Now if ishShowMask is true then only Mask component should be called therefore 
+in table.jsx
+{ 
+          this.state.isShowMask && < Mask fnconfirm ={this.fnConfirm} />
+        }
+
+right side this.fnConfirm goes to Parent table.js
+with argument msg
+
+fnConfirm(msg){
+    debugger;
+    this.setState({
+      isShowMask:false
+    })
+    if(msg=='ok'){
+      this.props.fnDelete(this.state.id)
+    }
+  }
+
+bind fnConfirm with constructor because we are calling fnDelete 
+    this.fnConfirm=this.fnConfirm.bind(this);
+
+bind fnDeletat with constructor
+    this.fnDeleteData=this.fnDeleteData.bind(this);  
+============================================
+
+
+
+
+

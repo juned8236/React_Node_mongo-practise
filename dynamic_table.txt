@@ -1,0 +1,141 @@
+create one table component
+create-react-component Table
+
+# to make table dynamic call it from user.jsx
+ <p>
+        {this.state.msg}
+      </p>
+      <h1>users</h1>
+      <Table />
+
+for table we need column header, rows to get data from database, and data, in first time loading therefore
+in user.js  constructor
+    'headers': ['ID', 'STD NAME', 'STD RNO', 'EMAIL', 'LOC'],
+      'rows': ['id', 'name', 'rno', 'email', 'loc'], #key should be same as column name in database
+( from consol found: object with keys {command, rowCount, oid, rows, fields, _parsers, _types, RowCtor, rowAsArray}). I
+      'data': [],
+to display these thing send them to user.jsx  (anything coming from outside in the form of props)
+  const {headers,data,rows} =this.state;
+
+now send these thing to Table component in the form of attributes (in user.jsx)
+      <Table headers={headers} data={data} rows={rows}  />
+
+to display use them on table.jsx
+  const {headers,data,rows} = this.props;
+(any thing coming from outside (user.jsx) in the form of props.
+
+#now making table
+  return (
+    <div className="table">
+      <table border='1px'>
+        <tr>
+          {
+            headers.map((v,i)=>{
+              return<th>{v}</th>
+            })
+          }
+        </tr>
+      </table>
+    </div>
+#here we are making dynamic table means for any no. of column and any number of rows
+by map function 
+map function taking value as an array and iterate over them one by one so we are taking two argument
+v=value (element one by one)
+i=index
+<tr>= for the row
+<th> =for the column
+=======================================================================================================
+
+now to get data from database and display on Table 
+First step = do Backend  
+webpack.js
+
+router.get('/std-list',function(req,res,next){
+    shareObj.getPgConnection(
+      res,
+      function(con){
+           var q="SELECT * FROM users";
+           con.query(q,function(e,s){
+               if(e){
+                 res.send(e);
+               }else{
+                 res.send(s);
+               }
+           })
+      }
+    )
+})
+
+check data by restclient 
+http://localhost:2020/web/std-list
+using post method 
+
+2nd Step do FrontEnd 
+data should be loaded on first time so in user.js (constructor)
+let data=[]
+data should comeby function get method therefore
+  fnGetStudetns() {
+    debugger;
+    ServerCall.fnGetReq('http://localhost:2020/web/std-list')
+      .then(
+        (res) => {
+          this.setState({
+            data: res.data.rows
+          })
+        }
+      )
+      .catch((res) => {
+        this.setState({
+          data: []
+        })
+      })
+    }
+
+bind this fnGetStudent with constructor
+    this.fnGetStudetns=this.fnGetStudetns.bind(this)
+
+and we want to display with clicking on Register button
+ fnReg(){
+    // debugger;
+    ServerCall.fnPostReg('http://localhost:2020/web/std-reg',this.state.dataObj)
+   .then(
+     (res)=>{
+      //  debugger;
+      if (res.data && res.data.rowCount){
+        this.fnGetStudetns();
+
+by putting debugger in fngetstudent at res 
+see at console res.data
+rows: Array(11)
+0: {name: "", rno: "drgdg", email: "", loc: ""}
+1: {name: "f", rno: "sdfg", email: "sdfsdf", loc: "sdgsdg"}
+2: {name: "sdgfgdfg", rno: "dfghfdhdfh", email: "dfgdfgdfh", loc: "dfhdfhd"}
+3: {name: "dffgdfgdfg", rno: "dfhdfhdfh", email: "dfghdfghdfh", loc: "dfhdfhdfh"}
+
+there use data=res.data.rows (postgresql)
+there use data=res.data.keys (mysql)
+now these are save in data=[] and we have have already send data
+
+in tabel.jsx
+    {data.map((o,i)=>{
+             return <tr>
+               {
+                 rows.map((k,i)=>{
+                   return <td>{o[k]}</td>
+                 })
+               }
+             </tr>
+           })}
+
+first make function take return element name:juned then rno:34 
+second map function return element juned ,34
+
+
+
+           
+
+
+
+
+
+

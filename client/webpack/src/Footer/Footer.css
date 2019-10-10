@@ -1,0 +1,14 @@
+.footer{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    background: yellow;
+    font-size: 20px;
+    font-weight: bolder;
+}
+/* 
+postion Fixed;
+    a. remove space from dom 
+    b.change behaviour block to inline
+    c. visibilty area (scrolling with up and down) */

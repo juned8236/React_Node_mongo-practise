@@ -1,0 +1,338 @@
+=====================================================
+ sudo npm i -g create-react-app
+##to install react application
+then create application
+create-react-app applicationname
+
+#to install component in nodemodule
+sudo npm i -g create-react-component 
+
+# then install package.json file
+firs check package.json by ls (package.json was in cd application name)
+
+sudo npm install
+
+#to start the server 
+sudo npm start
+
+#to create many component
+create-react-component componentname 
+(create in src)
+ 
+
+#for routing
+npm install react-router-dom --save
+--save will update package.json
+=================================================
+1.see index.js
+ReactDom.render(</App>
+so first App component bydefault loaded then go App.js
+(react is single page application means only file file load and all component will loaded into it.)
+
+
+2.in App.js first  i am creating header so import header
+import Header from './Header/index'
+to write header related we write in Header.jsx
+to write header css relate logic write in Header.css
+
+MAKE SURE ALL LOGIC WILL BE WITHIN ONE <DIV></DIV>  TAG
+similarly create all component
+==================================================
+
+======================================================
+Routing with hash(#)==|
+to import something shortcut
+1.
+import{} from 'react-router-dom';
+then within curly bract ctrl+space
+Select HashRouter to make link with #
+and Route for routing purpose
+
+
+2. import all component
+	import AboutUs from '../AboutUs/index';
+import Home from '../Home/index';
+import Contact from '../Contact/index'
+
+3.<div><HashRouter>all thing </HashRouter></div>
+
+4.             <Route path='/home' component={Home} />
+
+calling component Home and path after localhost
+is localhost/#/home 
+because it is HashRouter used for google analytics
+======================================================
+Routing without hash
+import BrowserRouter,Route and Link 
+link is equivalent to anchor tag <a href= 
+remaining things are same above
+===================================================
+now creating user component
+create-react-component User
+create link (router for user by above step)
+now i need the thing in dynamic on clicking on user i have to input some value that goes to database therefore,for
+input create one component called Inputcomponent {create-react-component InputComponent}
+dynamic means from user.jsx  we called inputcomp.jsx  
+eg. in user.jsx
+            <input  />
+
+
+in user.jsx   calling Input componetnt
+      <InputComp label="Name" type='text' id="name" ></InputComp>
+
+these id label type going outside to inputcomp.jsx refore goes in the form of props
+
+const {id,type,label}= this.props
+
+using these id type label in Inputcomp.jsx in the form attribute
+        <b>{label}</b>: <input input id={id} type={type}/>
+
+Name  texbox  here label is using for Name type is using for text box and id is using for key like we send data in json format hence
+key value is neceesary,id used for key and value we will get from onchange
+
+Dynamic in the sense first time in input.jsx  <input id={id} type={type} {label} this is created now you can create many box in user.jsx
+by using this
+
+output
+
+
+all boxes are made from input.jsx  by this single line  <input id={id} type={type} {label}
+therefore use Onchange command here
+<input id={id} type={type} {label} onChange={this.fnChange.bind(this)}
+
+now creating fnchange in input.js because  
+onChange means one event is trigger taking as argument e(userdefined) which gives id and value by e.target.id and e.target.value in console use
+debugger
+instead of repeating use destruction  see below
+fnChange(e)
+const {id,value} =e.target;
+
+=====================================================================================================
+
+now taking this id and value, going to prepare Data in user.jsx
+      <InputComp label="Name" type='text' id="name"fnPrepareData11={this.fnPrepareData.bind(this)} ></InputComp>
+now right side goes to parent side that is
+ user.js
+
+ fnPrepareData(){
+    debugger;
+  }
+
+
+left side fnPrepareData11 goes to children in the form of props i.e  <InputComp in the form of props this.fnPrepareData11()
+now taking id  value from fnChange
+fnChange(e)
+const {id,value} =e.target;
+this.fnPrepareData11(id,value);
+
+these in bracket id,value goes to here user.js in the form of argument
+ fnPrepareData(key,value)  arguement is user define
+    debugger;
+  }
+
+now we have key and value ,so we are going to prepare json object
+eg :-
+dataObj:{
+"key":value,
+"key":value,
+}
+so at first time constructor is going to loaded 
+ constructor(){
+    super();
+    this.state={
+      'dataObj':{}
+    }
+  }
+#this  is only used for static data but here every time we have to add data means dynamic data therefore using this.state
+
+To update in dataObj ,first the data is coming on this function fnPrepareData(key,value) so update dataObj from here
+  this.setState({
+      dataObj:{
+        [key]:value
+      }
+    })
+
+firk key value come save in dataObj then second key value comes so second one is going to overide first key value so overcome this problem
+ this.setState({
+      dataObj:{
+        ...this.state.dataObj,
+           [key]:value
+      }
+
+==================================================================================================
+to install axios
+npm i axios --save
+
+now on clicking register button all dataObj json will be send to database
+first 
+ <input type='button' value='Register' onClick={this.fnReg.bind(this)} 
+fnReg method will trigger on parent side
+on fnReg we have to send that json object by post method
+
+services=
+	sharing the functionality through the class ,we can call that function whenever we want
+eg: now our need only to send data to database by post method but later if we need get request to get all 100 user
+again we need get method to get 10 user so used service.js 
+so creating one folder 
+services---
+	   |
+	   |-----services.js
+
+import axios from 'axios';
+class ServerCall{
+    static fnGetReg(url){
+        return axios.get(url)
+    }
+
+    static fnPostReg(url,data){
+        return axios.post(url,data)
+    }
+}
+
+export default ServerCall;
+static means =make method static to call all object directly
+
+for get request only url is sufficient to get data therefore fngetreq(url)
+for post request we need url plus data (to send data into database) therefore  funpost(url,data)
+and it is returning axios and that axios return promise .then and .catch that promise we are using
+in fnReg and then write logic there
+
+export default ServerCall; this is exporting whole class therefore import this class where you have to use promise
+eg.  in user.js 
+
+import serverCall from '../services/serverCall'
+now used fnpostREg from class serverCall
+
+    ServerCall.fnPostReg('http://localhost:2020/users/std-reg',this.state.dataObj)
+	    static fnPostReg(url,data)
+json object was in this.state.dataObj
+
+check finally in console put debugger in fnReg
+this.state
+{dataObj: {…}}
+this.state.dataObj
+{name: "s", Rno: "sdfsd", Email: "sdfd", Location: "sdsdf"}
+
+
+=============================================SERVER SIDE =============================================================
+Using Express framework
+install latest npm
+#check npm by
+$npm
+
+#install express and express-generator
+npm -i -g express
+npm -i -g express-generator
+
+-i==== install
+-g====at global location
+
+========================Basic Skelton========================================
+
+create folder server 
+cd folder
+$ express
+folder structor will created
+
+$ npm install
+ #npm install will install all the dependencies inside PACKAGE.JSON file
+
+We have to work with mysql
+
+npm intall mysql --save
+
+#--save command will save mysql in PACKAGE.JSON	
+ 
+#for integration of front end with backend we need CORS (cross origin Resource sharing)
+
+npm install cors --save
+
+# we can use single command
+npm install mysql cors --save
+
+
+ 	app.js
+#first create port no. inwhich localhost list (localhost:2020)
+app.listen(2020);
+console.log('server started');
+
+#start sever by (be sure by ls that app.js file is there means location)
+$ node app
+check 
+http://localhost:2020/
+=================================================================================
+to use cors
+var cors=require('cors');
+app.use(cors());
+
+
+=======================================
+in route folder create file  webpack.js
+----------webpack.js------------------
+var express=require('express');  #working in express framework
+var router=express.Router(); #express has method router
+
+module.exports=router    #compulsory to export
+
+#there is app.js file which is used to start the server, therefore we have  register all thing in app.js
+
+-----app.js---
+
+var webPack= require('./routes/webpack')
+#then create first end point after localhost:2020/web
+app.use('/web',webPack);
+#here end point localhost:2020/web is calling var=Weback
+
+=================================================================
+
+now giving connection to Mysql Database
+we have to send so many get and post requesto so everytime writing  connection setting on get and post request 
+we are defining one separte file Share.js and we call that connection by callback function
+
+create Share.js file in Route folder
+var mysql =require('mysql'); #for mysql
+var shareObj={}; #so many method get post will be called so stored in dictionary in the form of attribute
+
+shareObj.getMysqlCon=function(response1,callback){   # calling variavle shareobj,  .getmysqlcon(userdefined) whenever 
+    var con=mysql.createConnection({		we need two argument 1st is to give response (response1)eg   
+					       if error give db connection error  and second one is callback if
+        'host':'0.0.0.0',			connection is established,this callback function is going to return connection by 
+        'user':'root',				callback(con)
+        'password':'jd',			
+        'database':'mysql'
+    })
+    con.connect(function(errer){     #we are giving one argument to function if there was error it give response db connection error
+        if(errer){					else returning connection by callback(con)
+            response1.send('db connection error');
+        }
+        callback(con)
+    })
+}
+
+module.exports=shareObj;  #exporting shareObj={} so it canbe used in webpack.js
+
+
+now webpack.js
+var shareObj=require('./share');
+
+router.post('/std-reg',function(req,res){   here giving post method means after localhost:2020/web/std-reg
+    var name=req.body.name;
+    var rno=req.body.rno;
+    var email=req.body.email;
+    var loc=req.body.loc;
+
+here body.name  name is the key this is to same as front end
+
+in webpack.js
+    shareObj.getMysqlCon(res,function(con)
+in share.js						 #here function is calling callback from share.js  so this is call back function 
+shareObj.getMysqlCon=function(response1,callback)       after completing this below connection it was returning  callback(con)  her con is the 	        callback(con)					connection method con.connect(functio())
+
+
+
+==============================================================================================================================
+
+
+
+
+
